@@ -56,7 +56,7 @@ const business: BusinessConfig = {
   },
 
   // TBD — confirm the exact handle before deploying/sending.
-  instagramHandle: 'northernwaffles',
+  instagramHandle: 'northernwafflescafe',
   links: {
     order: '#menu',
     // TBD — no separate catering page found; pointing at Visit/Instagram DM
