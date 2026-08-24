@@ -90,7 +90,7 @@ export function Hero() {
         className={cx(
           'pointer-events-none relative z-20',
           desktop
-            ? 'flex items-center pt-16 pb-28 pl-8 pr-4 xl:pl-14 xl:pr-6'
+            ? 'flex items-center pt-24 pb-16 pl-8 pr-4 xl:pl-14 xl:pr-6'
             : 'shell',
         )}
         style={reduced ? undefined : { y: copyY, opacity: copyOpacity }}
@@ -143,7 +143,7 @@ export function Hero() {
 
           <motion.p
             variants={variants ?? staggerItem}
-            className="mt-3 max-w-[24rem] text-[1.0625rem] leading-[1.6] text-toast-500 md:mt-5 md:max-w-[32rem] md:text-[1.05rem] md:leading-[1.6]"
+            className="mt-3 max-w-[24rem] text-[1.0625rem] leading-[1.6] text-toast-500 md:mt-5 md:max-w-[32rem] md:text-[1.125rem] md:leading-[1.65]"
           >
             Pressed fresh to order in Toronto’s Junction — deep-pocketed{' '}
             <strong className="font-semibold text-toast-700">Belgian</strong> rounds,
