@@ -1,18 +1,11 @@
 import { useState } from 'react'
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion'
-import { site } from '../config/site'
+import { config, copy } from '../config/business'
 import { useIsDesktopUp, usePrefersReducedMotion } from '../hooks/useMediaQuery'
 import { usePastHero } from '../hooks/usePastHero'
 import { EASE_SOFT } from '../lib/motion'
 import { cx } from '../lib/cx'
 import { WaffleMarkIcon, OrderBagIcon } from './icons'
-
-const LINKS = [
-  { href: '#why', label: 'Why us' },
-  { href: '#menu', label: 'Menu' },
-  { href: '#gallery', label: 'Gallery' },
-  { href: '#visit', label: 'Visit' },
-]
 
 /**
  * Floating nav. Starts transparent and open over the hero, then condenses into
@@ -51,24 +44,24 @@ export function Nav() {
           <a
             href="#home"
             className="group flex items-center gap-2.5"
-            aria-label={`${site.name} — home`}
+            aria-label={`${config.name} — home`}
           >
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-toast-800 text-honey-400 shadow-soft transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] group-hover:-rotate-6 md:h-10 md:w-10">
               <WaffleMarkIcon className="h-[1.05rem] w-[1.05rem]" />
             </span>
             <span className="flex flex-col gap-1 leading-none">
               <span className="block text-[0.625rem] font-semibold tracking-[0.18em] text-toast-400 uppercase">
-                {site.wordmark.first}
+                {config.wordmark.first}
               </span>
               <span className="display block text-[1.0625rem] leading-none text-toast-800">
-                {site.wordmark.second}
+                {config.wordmark.second}
               </span>
             </span>
           </a>
 
           {/* Desktop links */}
           <div className={cx(desktop ? 'flex items-center gap-1' : 'hidden')}>
-            {LINKS.map((l) => (
+            {copy.nav.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -83,9 +76,7 @@ export function Nav() {
               keeps its slot so the wordmark doesn't jump. CSS, not motion
               values: the parent nav already animates opacity on mount. */}
           <a
-            href={site.links.order}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={config.links.order}
             data-nav-order=""
             tabIndex={hideOrder ? -1 : undefined}
             aria-hidden={hideOrder}
@@ -99,8 +90,8 @@ export function Nav() {
             }}
           >
             <OrderBagIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">Order Online</span>
-            <span className="sm:hidden">Order</span>
+            <span className="hidden sm:inline">{copy.cta.orderLong}</span>
+            <span className="sm:hidden">{copy.cta.orderShort}</span>
           </a>
         </motion.nav>
       </div>

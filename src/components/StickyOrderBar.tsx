@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { site } from '../config/site'
+import { config, copy } from '../config/business'
 import { useIsDesktopUp, usePrefersReducedMotion } from '../hooks/useMediaQuery'
 import { usePastHero } from '../hooks/usePastHero'
 import { EASE_SOFT, springSoft } from '../lib/motion'
@@ -42,15 +42,15 @@ export function StickyOrderBar() {
               {/* Brand cue, restated where the thumb is */}
               <span className="flex min-w-0 flex-col leading-none">
                 <span className="display text-[1.0625rem] text-toast-800">
-                  {site.wordmark.second}
+                  {config.wordmark.second}
                 </span>
                 <span className="eyebrow mt-1 text-[0.5rem] text-toast-400">
-                  Belgian · Liège
+                  {copy.brandDescriptor}
                 </span>
               </span>
 
               <a
-                href={site.links.instagramDm}
+                href={config.links.instagramDm}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="DM us on Instagram"
@@ -60,15 +60,13 @@ export function StickyOrderBar() {
               </a>
 
               <motion.a
-                href={site.links.order}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={config.links.order}
                 className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-berry-500 text-[0.9375rem] font-semibold text-cream-50 shadow-cta"
                 whileTap={reduced ? undefined : { scale: 0.96 }}
                 transition={{ duration: 0.18, ease: EASE_SOFT }}
               >
                 <OrderBagIcon className="h-[1.15rem] w-[1.15rem]" />
-                Order online
+                {copy.cta.orderSentence}
               </motion.a>
             </div>
           </div>

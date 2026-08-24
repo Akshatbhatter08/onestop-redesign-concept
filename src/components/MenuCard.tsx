@@ -1,6 +1,5 @@
 import { motion, useTransform } from 'framer-motion'
-import { formatCad, type MenuItem } from '../data/menu'
-import { site } from '../config/site'
+import { formatPrice, config, copy, type MenuItem } from '../config/business'
 import { useTilt } from '../hooks/useInteractions'
 import { usePrefersReducedMotion } from '../hooks/useMediaQuery'
 import { springSoft } from '../lib/motion'
@@ -38,9 +37,7 @@ export function MenuCard({ item, index, className }: Props) {
   return (
     <motion.a
       ref={ref}
-      href={site.links.order}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={config.links.order}
       className={cx(
         'group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-cream-50 shadow-soft ring-1 ring-toast-200/60 will-change-transform',
         'transition-shadow duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-lift',
@@ -116,7 +113,7 @@ export function MenuCard({ item, index, className }: Props) {
           </h3>
           <span className="notch shrink-0 rounded-full bg-honey-100 px-3 py-1.5 ring-1 ring-honey-300/70">
             <span className="price text-[0.9375rem] whitespace-nowrap text-toast-800 tabular-nums md:text-[1.0625rem]">
-              {formatCad(item.price, item.priceMax)}
+              {formatPrice(item.price, item.priceMax)}
             </span>
           </span>
         </div>
@@ -130,7 +127,7 @@ export function MenuCard({ item, index, className }: Props) {
         )}
 
         <span className="mt-4 inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-berry-500">
-          Order this
+          {copy.cta.orderThis}
           <ArrowIcon className="h-3.5 w-3.5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1" />
         </span>
       </div>

@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--no-open"],
       "port": 5173
+    },
+    {
+      "name": "waffle-verify",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--no-open", "--port", "5199", "--strictPort"],
+      "port": 5199
     }
   ]
 }

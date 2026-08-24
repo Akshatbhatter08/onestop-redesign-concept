@@ -4,26 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    <title>One Stop Waffle Shop — Authentic Belgian & Liège Waffles | Toronto's Junction</title>
-    <meta
-      name="description"
-      content="Fresh Belgian waffles, authentic Liège waffles, handcrafted milkshakes, and catering in Toronto's Junction. Order online for pickup or delivery."
-    />
+    <!-- Browser chrome colour = the shared cream page background (light) and dark
+         toast (dark). Part of the design system, identical across businesses. -->
     <meta name="theme-color" content="#FDF7EE" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#2B1810" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-    <meta name="apple-mobile-web-app-title" content="One Stop Waffle" />
 
-    <!-- Open Graph / social -->
+    <!-- SEO:START — title, description, social tags, and JSON-LD are injected from
+         src/config/business.ts at build (and dev) time by the inject-seo plugin in
+         vite.config.ts. Do NOT hand-edit; change the config instead. The values
+         below are a readable fallback that mirror what the plugin generates. -->
+    <title>One Stop Waffle Shop — Authentic Belgian &amp; Liège waffles in Toronto's Junction</title>
+    <meta
+      name="description"
+      content="Fresh Belgian waffles, authentic Liège waffles, handcrafted milkshakes, and catering in Toronto's Junction. Order online for pickup or delivery."
+    />
+    <meta name="apple-mobile-web-app-title" content="One Stop Waffle" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="One Stop Waffle Shop — Belgian & Liège waffles in Toronto" />
+    <meta property="og:title" content="One Stop Waffle Shop — Authentic Belgian &amp; Liège waffles in Toronto's Junction" />
     <meta
       property="og:description"
-      content="Authentic Belgian & Liège waffles, handcrafted milkshakes, and catering in Toronto's Junction. Order online."
+      content="Fresh Belgian waffles, authentic Liège waffles, handcrafted milkshakes, and catering in Toronto's Junction. Order online for pickup or delivery."
     />
     <meta property="og:locale" content="en_CA" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "One Stop Waffle Shop",
+        "servesCuisine": ["Belgian Waffles", "Liège Waffles", "Desserts", "Milkshakes", "Coffee"],
+        "priceRange": "$$",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Toronto",
+          "addressRegion": "ON",
+          "addressCountry": "CA"
+        },
+        "sameAs": ["https://instagram.com/onestopwaffleshop"]
+      }
+    </script>
+    <!-- SEO:END -->
+
+    <!-- Warm the glTF while the JS bundle parses — otherwise Vercel visitors wait
+         for the idle gate, then the 1MB three.js chunk, *then* this 1MB bin. -->
+    <link rel="preload" href="/models/scene.gltf" as="fetch" crossorigin />
+    <link rel="preload" href="/models/scene.bin" as="fetch" crossorigin />
 
     <!-- Fonts: Fraunces (display) + Plus Jakarta Sans (body). See README to self-host. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,26 +66,6 @@
         background-color: #fdf7ee;
       }
     </style>
-
-    <!-- TBD: add streetAddress, telephone, geo and openingHoursSpecification once the
-         real listing details are confirmed. Locality/region are from their live site. -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Restaurant",
-        "name": "One Stop Waffle Shop",
-        "url": "https://onestopwaffle.shop",
-        "servesCuisine": ["Belgian Waffles", "Liège Waffles", "Desserts", "Milkshakes", "Coffee"],
-        "priceRange": "$$",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Toronto",
-          "addressRegion": "ON",
-          "addressCountry": "CA"
-        },
-        "sameAs": ["https://www.instagram.com/onestopwaffleshop"]
-      }
-    </script>
   </head>
   <body>
     <div id="root"></div>

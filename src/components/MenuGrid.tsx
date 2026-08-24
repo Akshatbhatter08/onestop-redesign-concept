@@ -2,10 +2,11 @@ import { useState } from 'react'
 import {
   menu,
   DEFAULT_MENU_CATEGORY,
-  formatCad,
+  formatPrice,
+  config,
+  copy,
   type MenuCategory,
-} from '../data/menu'
-import { site } from '../config/site'
+} from '../config/business'
 import { Reveal, Stagger, StaggerItem } from './Reveal'
 import { MenuCard } from './MenuCard'
 import { MagneticCta } from './MagneticCta'
@@ -35,14 +36,15 @@ export function MenuGrid() {
 
       <div className="shell relative">
         <Reveal className="max-w-[40rem]" y={24}>
-          <span className="eyebrow text-honey-700">The menu</span>
+          <span className="eyebrow text-honey-700">{copy.menu.eyebrow}</span>
           <h2 className="display mt-4 text-[clamp(2.125rem,8.6vw,2.75rem)] text-toast-800 md:text-[3.25rem]">
-            Belgian, Liège, and{' '}
-            <span className="display-accent text-honey-600">a lot more.</span>
+            {copy.menu.headline.lead}{' '}
+            <span className={cx('display-accent', copy.menu.headline.accentClass)}>
+              {copy.menu.headline.accent}
+            </span>
           </h2>
           <p className="mt-4 text-[1.0625rem] leading-[1.65] text-toast-500 md:text-[1.125rem]">
-            Pressed fresh when you order. Real items, real prices — tap anything
-            to order on Square.
+            {copy.menu.subcopy}
           </p>
         </Reveal>
 
@@ -109,7 +111,7 @@ export function MenuGrid() {
 
         {category.layout !== 'list' && category.items.length > 2 ? (
           <p className="mt-4 text-center text-[0.75rem] font-medium tracking-[0.08em] text-toast-300 uppercase md:hidden">
-            Swipe for more →
+            {copy.cta.swipeForMore}
           </p>
         ) : null}
 
@@ -118,12 +120,12 @@ export function MenuGrid() {
           y={20}
         >
           <MagneticCta
-            href={site.links.order}
+            href={config.links.order}
             variant="dark"
             icon={<OrderBagIcon className="h-[1.15rem] w-[1.15rem]" />}
             withArrow
           >
-            Order online
+            {copy.cta.orderSentence}
           </MagneticCta>
         </Reveal>
       </div>
@@ -137,14 +139,12 @@ function DrinkList({ category }: { category: MenuCategory }) {
       {category.items.map((item) => (
         <li key={item.id}>
           <a
-            href={site.links.order}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={config.links.order}
             className="flex min-h-14 items-center justify-between gap-4 px-5 py-3.5 transition-colors duration-200 hover:bg-honey-100/40"
           >
             <span className="text-[1rem] font-semibold text-toast-800">{item.name}</span>
             <span className="price shrink-0 text-[1rem] text-toast-800 tabular-nums">
-              {formatCad(item.price, item.priceMax)}
+              {formatPrice(item.price, item.priceMax)}
             </span>
           </a>
         </li>

@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { site } from '../config/site'
+import { config, copy } from '../config/business'
 import { Reveal } from './Reveal'
 import { MagneticCta } from './MagneticCta'
 import { ClockIcon, PinIcon, OrderBagIcon } from './icons'
+import { cx } from '../lib/cx'
 
 /**
  * Location.
@@ -15,6 +16,10 @@ import { ClockIcon, PinIcon, OrderBagIcon } from './icons'
  */
 export function LocationMap() {
   const [live, setLive] = useState(false)
+
+  // `confirmed: false` in config surfaces the honest "(to confirm)" suffix.
+  const hoursLabel =
+    copy.visit.hoursLabel + (config.hours.confirmed ? '' : copy.visit.unconfirmedSuffix)
 
   return (
     <section
@@ -30,10 +35,12 @@ export function LocationMap() {
         {/* ---------- Details ---------- */}
         <div className="lg:col-span-5">
           <Reveal x={-20} y={16}>
-            <span className="eyebrow text-honey-700">Come by</span>
+            <span className="eyebrow text-honey-700">{copy.visit.eyebrow}</span>
             <h2 className="display mt-4 text-[clamp(2.125rem,8.6vw,2.75rem)] text-toast-800 md:text-[3.25rem]">
-              Find us in{' '}
-              <span className="display-accent text-honey-600">the Junction.</span>
+              {copy.visit.headline.lead}{' '}
+              <span className={cx('display-accent', copy.visit.headline.accentClass)}>
+                {copy.visit.headline.accent}
+              </span>
             </h2>
 
             <div className="mt-8 space-y-6">
@@ -43,18 +50,19 @@ export function LocationMap() {
                   <PinIcon className="h-[1.15rem] w-[1.15rem]" />
                 </span>
                 <div>
-                  <span className="eyebrow text-toast-300">Address</span>
+                  <span className="eyebrow text-toast-300">{copy.visit.addressLabel}</span>
                   <address className="mt-2 text-[1rem] leading-[1.6] text-toast-700 not-italic md:text-[1.0625rem]">
-                    {site.addressLines.map((line) => (
+                    {config.addressLines.map((line) => (
                       <span key={line} className="block">
                         {line}
                       </span>
                     ))}
                   </address>
-                  <p className="mt-1.5 text-[0.75rem] text-toast-400">
-                    Exact street address to be confirmed — the map pins our Junction
-                    neighbourhood for now.
-                  </p>
+                  {!config.location.addressConfirmed && (
+                    <p className="mt-1.5 text-[0.75rem] text-toast-400">
+                      {copy.visit.addressNote}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -64,9 +72,9 @@ export function LocationMap() {
                   <ClockIcon className="h-[1.15rem] w-[1.15rem]" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <span className="eyebrow text-toast-300">Hours (to confirm)</span>
+                  <span className="eyebrow text-toast-300">{hoursLabel}</span>
                   <dl className="mt-2 space-y-1.5">
-                    {site.hours.map((h) => (
+                    {config.hours.schedule.map((h) => (
                       <div
                         key={h.days}
                         className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-toast-200/60 pb-1.5 last:border-b-0"
@@ -88,21 +96,21 @@ export function LocationMap() {
                 pushed the pair over and flex-shrink shaved a pixel off each. */}
             <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <MagneticCta
-                href={site.links.order}
+                href={config.links.order}
                 variant="primary"
                 size="md"
                 icon={<OrderBagIcon className="h-[1.15rem] w-[1.15rem]" />}
               >
-                Order online
+                {copy.cta.orderSentence}
               </MagneticCta>
               <MagneticCta
-                href={site.map.directions}
+                href={config.map.directions}
                 variant="cream"
                 size="md"
                 withArrow
-                label="Get directions to the shop"
+                label={copy.cta.directionsLabel}
               >
-                Directions
+                {copy.cta.directions}
               </MagneticCta>
             </div>
           </Reveal>
@@ -125,13 +133,15 @@ export function LocationMap() {
                 <div className="waffle-motif absolute inset-0 opacity-70" />
                 <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-cream-50/80 px-3 py-1.5 ring-1 ring-toast-200/60 backdrop-blur-sm">
                   <PinIcon className="h-3.5 w-3.5 text-berry-500" />
-                  <span className="eyebrow text-[0.5625rem] text-toast-500">{site.area}</span>
+                  <span className="eyebrow text-[0.5625rem] text-toast-500">
+                    {config.location.neighbourhood}
+                  </span>
                 </div>
               </div>
 
               <iframe
-                title={`Map — ${site.name}, ${site.area}, ${site.city}`}
-                src={site.map.embedSrc}
+                title={`Map — ${config.name}, ${config.location.neighbourhood}, ${config.location.city}`}
+                src={config.map.embedSrc}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
@@ -149,7 +159,7 @@ export function LocationMap() {
                 >
                   <span className="glass flex items-center gap-2 rounded-full px-4 py-2.5 text-[0.8125rem] font-semibold text-toast-700 shadow-soft ring-1 ring-toast-200/60 transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] group-hover:scale-[1.04]">
                     <PinIcon className="h-4 w-4 text-berry-500" />
-                    Tap to interact
+                    {copy.cta.tapToInteract}
                   </span>
                 </button>
               )}

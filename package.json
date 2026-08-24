@@ -1,9 +1,9 @@
 {
-  "name": "one-stop-waffle-shop",
+  "name": "waffle-shop-template",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "One Stop Waffle Shop — Belgian & Liège waffles in Toronto's Junction. Pitch concept.",
+  "description": "A centralized, config-driven marketing-site template for waffle shops — one BusinessConfig drives copy, menu, photos, SEO, and an optional brand accent.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

@@ -1,4 +1,4 @@
-import { tickerItems } from '../config/site'
+import { copy } from '../config/business'
 import { WaffleMarkIcon } from './icons'
 
 /**
@@ -18,9 +18,9 @@ export function Marquee() {
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-toast-800 to-transparent md:w-24" />
 
       <div className="animate-marquee flex w-max will-change-transform">
-        {[0, 1].map((copy) => (
-          <div key={copy} className="flex shrink-0 items-center">
-            {tickerItems.map((item) => (
+        {[0, 1].map((copyIdx) => (
+          <div key={copyIdx} className="flex shrink-0 items-center">
+            {copy.marquee.map((item) => (
               <span key={item} className="flex shrink-0 items-center">
                 <span className="px-5 text-[0.8125rem] font-medium tracking-[0.02em] whitespace-nowrap text-cream-200/85 md:px-7 md:text-[0.9375rem]">
                   {item}

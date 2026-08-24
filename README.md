@@ -1,19 +1,46 @@
-# One Stop Waffle Shop — pitch concept
+# Waffle Shop Template
 
-A design concept for **[One Stop Waffle Shop](https://onestopwaffle.shop)** —
-authentic **Belgian & Liège waffles**, milkshakes, and catering in **Toronto's
-Junction**.
+A fast, animated, mobile-first marketing site for a waffle shop — 3D waffle hero,
+smooth scrolling, and online ordering as the primary call to action. It's built
+as a **template**: one shared design system, animation set, and 3D hero, with
+every business-specific value pulled out into a single config file.
 
-This is a **pitch build**, not their live site: it reimagines their Square
-Online storefront as a fast, animated, mobile-first single page. Mobile-first
-(designed at 390px, then scaled up), with a 3D waffle hero, Lenis smooth
-scrolling, and their online store as the primary order channel.
+Spinning up a new shop means editing config and dropping in photos — **no
+component touches required**. The design (cream/honey palette, berry CTA accent,
+Fraunces + Plus Jakarta type, the waffle motifs and motion) stays constant unless
+you deliberately override it.
 
-> **Real vs. placeholder** — this concept uses their real business name,
-> neighbourhood, menu **categories**, Instagram, and About copy. A few details
-> aren't publicly recoverable and are marked as **TBD** in the UI and here — see
-> [What's real vs. TBD](#whats-real-vs-tbd). Nothing was invented to look
-> finished.
+The repo currently ships populated with **One Stop Waffle Shop** (Belgian & Liège
+waffles in Toronto's Junction) as the worked example.
+
+---
+
+## Spin up a new business
+
+Everything below is edited in **one file** unless noted. See [The config](#the-config)
+for field-by-field detail.
+
+1. **[`src/config/business.ts`](src/config/business.ts)** — replace the `business`
+   object: name, wordmark, tagline, locale/currency, location, hours, Instagram
+   handle, order/catering links, `proof` points, `photos`, and any `copy`
+   overrides that differ from the shared defaults.
+2. **[`src/data/menu.ts`](src/data/menu.ts)** — replace the `menu` array with the
+   shop's categories and items. Set real `price` numbers, or omit them for a
+   category-only board (the card shows a "See menu" pill instead of a fake price).
+3. **`public/`** — drop in the referenced images (`image:` on menu items, `src:`
+   on `photos.items`). Any that are missing fall back to generated waffle art, so
+   the layout never looks broken — migrate photos one at a time.
+4. **Optional — brand accent.** Set `theme.accent` to a single hex to recolour the
+   CTAs; omit it to keep the design-system berry.
+5. `npm run build`. The page title, meta description, social tags, and JSON-LD are
+   generated from the config automatically (see [SEO](#seo)) — you never hand-edit
+   `index.html`.
+
+Sanity-check that nothing business-specific was left hardcoded:
+
+```bash
+grep -rn "TBD\|to confirm" src index.html
+```
 
 ---
 
@@ -40,108 +67,134 @@ Opens at <http://localhost:5173>.
 
 ---
 
-## What's real vs. TBD
+## The config
 
-All content lives in two files: [`src/config/site.ts`](src/config/site.ts)
-(business details, links, hours, map) and [`src/data/menu.ts`](src/data/menu.ts)
-(menu + gallery).
+All business-specific content lives under [`src/config/`](src/config):
 
-### Real — pulled from their live site
+| File                                             | What it holds                                                        |
+| ------------------------------------------------ | -------------------------------------------------------------------- |
+| [`business.ts`](src/config/business.ts)          | **The one file you edit per shop.** The `business` object + resolver. |
+| [`types.ts`](src/config/types.ts)                | The `BusinessConfig` / `SiteCopy` type contract.                     |
+| [`defaults.ts`](src/config/defaults.ts)          | Brand-neutral default copy + the 3D-model attribution.               |
+| [`theme.ts`](src/config/theme.ts)                | Derives the berry ramp from an optional `theme.accent`.              |
+| [`../data/menu.ts`](src/data/menu.ts)            | The menu catalogue.                                                  |
 
-- **Name, neighbourhood, positioning** — One Stop Waffle Shop, Toronto's
-  Junction; Belgian & Liège waffles, milkshakes, hot drinks, and catering.
-- **Menu categories** — Belgian Dessert Waffles, Liège Waffles, Savoury Waffles,
-  Waffle Pops, Combo Deals, Handcrafted Milkshakes, Ice Cream, Coffee & Hot
-  Drinks. These are their real categories.
-- **About / "why us" copy** — adapted from their own site (authentic Belgian
-  waffles, pressed fresh to order, catering up to a thousand waffle pops).
-- **Instagram** — [@onestopwaffleshop](https://www.instagram.com/onestopwaffleshop).
-- **Order & catering links** — their online store and `/catering` page.
+`business.ts` exports a resolved `config` (and a `copy` alias). Components read
+**only** from these — they never reach into defaults or derivation logic. The
+resolver merges copy overrides, derives Instagram/map/address values, substitutes
+`{city}` / `{neighbourhood}` tokens, and appends `@handle` to the marquee.
 
-### TBD — not publicly recoverable, marked as placeholder
+> **React-free by design.** Nothing under `src/config/` (or `src/data/menu.ts`,
+> `src/lib/format.ts`) may import React, three, or a component — `vite.config.ts`
+> imports the resolved config at build time to generate the SEO head, so the
+> config graph has to load outside the browser.
 
-Their storefront loads prices, address, phone and hours at runtime from Square's
-API, so none of it is in the static page. Rather than invent it, the concept
-shows it as clearly-labelled placeholder:
+### Defaults & overrides
 
-- **Exact street address** — the map pins the Junction neighbourhood by name; a
-  visible note says the street address is to be confirmed.
-- **Per-item names & CAD prices** — the menu shows real *categories* with a
-  "See menu" pill and a note that items/prices sync live from their Square
-  catalogue.
-- **Trading hours** — shown under a **"Hours (to confirm)"** label.
-- **Exact online-ordering deep link** — points at their homepage for now (their
-  `/order` path 404s and the Square store redirects); swap in the real deep link
-  when confirmed.
+Section copy — eyebrows, headlines, subcopy, reused button labels — has a shared,
+brand-neutral default in [`defaults.ts`](src/config/defaults.ts) (no "Belgian",
+no city, no neighbourhood). A business overrides **only the strings that differ**
+via `business.copy`, a deep-partial of `SiteCopy` that's merged over the defaults.
 
-Grep for anything still flagged:
+So a plain shop can leave `copy` almost empty; One Stop overrides its hero
+headline, marquee, menu/visit headlines, and a couple of others, and inherits the
+rest. Headlines split into a `lead` + an italic `accent` tail with an explicit
+`accentClass` (e.g. `text-honey-600`) so each section renders exactly as designed.
 
-```bash
-grep -rn "TBD\|to confirm\|placeholder" src index.html
-```
+### Honest placeholders (the "to confirm" pattern)
 
-### When the real details land
+Rather than invent details, the template surfaces unverified ones honestly, driven
+by two booleans:
 
-**[`src/config/site.ts`](src/config/site.ts)** is the hub. Update:
+- **`hours.confirmed: false`** → the hours label everywhere gains a
+  `(to confirm)` suffix (`copy.visit.unconfirmedSuffix`). Flip it to `true` once
+  the trading hours are verified and the suffix disappears.
+- **`location.addressConfirmed: false`** → the visit panel shows a short note that
+  the map pins the neighbourhood, not a street address. Set `location.fullAddress`
+  and flip this to `true` and the note is gone and the address block shows the
+  real lines.
 
-- **`ORDER_URL`** — the exact online-ordering deep link (feeds every "Order"
-  button: nav, hero, menu cards, sticky mobile bar, location panel, footer).
-- **`addressLines`** + **`map`** — add the street address, and switch the map
-  `query` from the neighbourhood name to the shop's Plus Code or Google Business
-  listing for an exact pin.
-- **`hours`** — replace the placeholder trading hours (and drop the "to confirm"
-  labels in `LocationMap`).
+The map itself is keyless (`output=embed`, no API key), pinned by
+`location.mapQuery` — a business name or a Plus Code / full address for an exact
+pin.
 
-Then in **[`src/data/menu.ts`](src/data/menu.ts)**, add real item names and CAD
-prices. Set `price` (a number, CAD) on an item and the card shows it; leave it
-`undefined` and the card falls back to the "See menu" pill:
+### Menu
+
+[`src/data/menu.ts`](src/data/menu.ts) is the catalogue: an array of categories,
+each with `items`. Prices are optional and format through the business's
+currency/locale:
 
 ```ts
 {
   id: 'liege-classic',           // stable slug, used as the React key
   name: 'Classic Liège',         // shown on the card
-  price: 6.5,                    // CAD, number not string — omit for "See menu"
+  price: 6.5,                    // number — omit entirely for a "See menu" pill
+  priceMax: 8.5,                 // optional upper bound → "$6.50–$8.50"
   featured: true,                // optional: richer placeholder art + spotlight
   blurb: 'Pearl-sugar dough, caramelised on the iron…',
   badge: 'Authentic',            // optional pill: Signature / Bestseller / …
+  image: '/liege.webp',          // optional; omit for generated waffle art
   tone: { syrup: '#6B4423', tint: '#EBD3B4' },
 }
 ```
 
-`tone` drives the card's flavour tint and the placeholder art's syrup colour —
-any CSS colour works. Add or remove items freely; the grid reflows
+`tone` drives the card's flavour tint and the placeholder art's syrup colour — any
+CSS colour works. A category with `layout: 'list'` renders as a compact list (used
+for canned drinks, where a grid of glyphs would look padded). `DEFAULT_MENU_CATEGORY`
+sets which tab opens first. Add or remove items freely; the grid reflows
 (1 → 2 → 3 → 4 columns) and the mobile carousel just gets longer.
 
-### Real photos
+Prices format through `formatPrice` in [`business.ts`](src/config/business.ts),
+which is bound to `locale.currency` + `locale.currencyLocale` — so `CAD` + `en-CA`
+yields `$6.50`, `USD` + `en-US` yields `$6.50`, `INR` + `en-IN` yields `₹6.50`,
+with no per-component changes.
 
-Both the menu and the gallery ship with generated SVG waffle art so the layout
-never looks broken. Swap either by dropping files into `public/` and pointing at
-them:
+### Photos: gallery vs social-cards
 
-| What    | Put files in       | Then set                                     |
-| ------- | ------------------ | -------------------------------------------- |
-| Menu    | `public/menu/`     | `image: '/menu/liege.jpg'` on the item       |
-| Gallery | `public/gallery/`  | `src: '/gallery/01.jpg'` on the shot         |
+`photos.mode` picks how the Instagram-teaser section renders its `items`:
 
-Both live in **[`src/data/menu.ts`](src/data/menu.ts)**. Leave the field
-`undefined` and the placeholder art renders instead — so you can migrate one
-photo at a time. Square-ish crops for the gallery (two tiles are `wide: true`);
-menu cards crop to 4:5 portrait, `object-cover`. Update the `alt` text as you go.
+- **`gallery`** — image tiles (or waffle-glyph placeholders when `src` is omitted);
+  set `wide: true` to break the uniform grid rhythm. The photo-rich default.
+- **`social-cards`** — text-forward cards that lead with each item's `caption`, for
+  a shop that has an Instagram voice but no photo library yet.
 
-### Also worth updating
+Both link to the shop's Instagram. Migrate from cards to gallery by switching the
+mode and adding `src`s.
 
-Still in **[`src/config/site.ts`](src/config/site.ts)**:
+### Brand accent
 
-- **`proof`** — the three trust points in the "why us" strip.
-- **`tickerItems`** — the scrolling strip under the hero.
+The design system's **berry** accent (CTAs, links, highlights) is shared. To
+recolour it per brand, set a single hex:
 
-And in **[`index.html`](index.html)**:
+```ts
+theme: { accent: '#7A5CFF' }
+```
 
-- The `Restaurant` JSON-LD block near the bottom. Add `streetAddress`,
-  `telephone`, `geo`, and `openingHoursSpecification` once confirmed — it's what
-  Google reads for the local knowledge panel.
-- `og:image` is deliberately absent. Add a 1200×630 shot in `public/` and a
-  `<meta property="og:image">` tag before sharing the link anywhere.
+At build time [`theme.ts`](src/config/theme.ts) derives a full 300–700 ramp from
+that hue and redefines the `--color-berry-*` CSS variables (and the CTA shadow) via
+an injected `<style>`. Omit `theme` (or `theme.accent`) and nothing is injected —
+the berry ramp stands untouched. The rest of the palette (cream/honey neutrals) is
+intentionally not themeable; it's the template's identity.
+
+### SEO
+
+[`index.html`](index.html) holds a marked block:
+
+```html
+<!-- SEO:START --> … <!-- SEO:END -->
+```
+
+The `inject-seo` plugin in [`vite.config.ts`](vite.config.ts) replaces it — in both
+dev and build — with a title (`name — tagline`), meta description
+(`shortDescription`), Open Graph + Twitter tags, and a `Restaurant` JSON-LD block,
+all derived from the config. It also rewrites `<html lang>` from `locale.lang`.
+**Don't hand-edit the block**; the values inside it are a readable fallback that
+mirror what the plugin generates.
+
+Two things worth adding before you share a link: `og:image` (a 1200×630 shot in
+`public/` plus a `<meta property="og:image">`), and — once confirmed — `telephone`,
+`geo`, and `openingHoursSpecification` in the JSON-LD (extend `buildSeoBlock` in
+`vite.config.ts`).
 
 ---
 
@@ -161,20 +214,26 @@ src/
 │   ├── StickyOrderBar.tsx  Footer.tsx
 │   ├── SmoothScroll.tsx       Lenis provider
 │   └── … Reveal, Stagger, MagneticCta, WaffleGlyph, Grain
-├── config/site.ts         ← business details, links, hours, map
-├── data/menu.ts           ← menu + gallery content
+├── config/
+│   ├── business.ts        ← THE per-shop file: business data + resolver
+│   ├── types.ts               BusinessConfig / SiteCopy contract
+│   ├── defaults.ts            shared brand-neutral copy + model attribution
+│   └── theme.ts               optional brand-accent → berry ramp
+├── data/menu.ts           ← menu catalogue
 ├── hooks/
 │   ├── useCanRender3D.ts      WebGL + device probe, and the idle gate
 │   ├── useInteractions.ts     useMagnetic, useTilt
 │   └── useMediaQuery.ts       usePrefersReducedMotion, useHasFinePointer
-├── lib/                   motion variants/easings (motion.ts), cx (cx.ts)
+├── lib/                   motion variants/easings (motion.ts), cx, formatMoney
 └── index.css              Tailwind v4 theme + waffle-grid / grain / shine motifs
 ```
 
 **Tailwind is v4** — configured in CSS, not JS. The palette, fonts, shadows and
 keyframes live in the `@theme` block at the top of
 [`src/index.css`](src/index.css). There is deliberately no `tailwind.config.js`
-and no PostCSS config; `@tailwindcss/vite` handles it.
+and no PostCSS config; `@tailwindcss/vite` handles it. Because v4 compiles utilities
+to CSS custom properties (`bg-berry-500` → `var(--color-berry-500)`), the brand
+accent can be re-themed just by redefining those variables (see [Brand accent](#brand-accent)).
 
 ### The 3D hero
 
@@ -285,12 +344,15 @@ Sketchfab under **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**:
 
 <https://sketchfab.com/3d-models/belgian-waffles-draft-a8d00d5e6f6f4703ae41fd146025cd2c>
 
-> **Attribution is shipped.** CC BY requires the credit to stay visible **on the
-> live site**, not just in this README — so it's rendered in the page footer
-> (fine-print row). Keep that credit line in place, and leave
+> **Attribution is shipped, and must stay that way.** CC BY requires the credit to
+> remain visible **on the live site**, not just in this README — so it's rendered
+> in the page footer (fine-print row) from `MODEL_ATTRIBUTION` in
+> [`src/config/defaults.ts`](src/config/defaults.ts). It's deliberately part of the
+> shared defaults, not per-business copy, so it can't be dropped when a new shop is
+> configured. Keep that credit line in place across every business, and leave
 > `public/models/license.txt` alongside the model if present.
 
-To swap in a different model, drop its `scene.gltf` + `.bin` into
-`public/models/` and update this credit. `WaffleGLTF` re-centres and re-scales
-whatever it loads, so a replacement needn't match the original's dimensions or
-origin.
+To swap in a different model, drop its `scene.gltf` + `.bin` into `public/models/`
+and update `MODEL_ATTRIBUTION` to match its licence. `WaffleGLTF` re-centres and
+re-scales whatever it loads, so a replacement needn't match the original's
+dimensions or origin.

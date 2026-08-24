@@ -1,23 +1,27 @@
 /**
  * ============================================================================
- * MENU — live Square catalogue (CAD), transcribed from the shop's ordering page.
+ * MENU — one business's catalogue. Swap this file per shop.
  * ============================================================================
  *
- * Tap-through still goes to their Square order flow. Photos we have live in
- * `public/`; items without a matching shot use the waffle glyph.
+ * Prices are formatted through `formatPrice` (config-bound to the business's
+ * currency/locale), so leave `price` off for a broad, price-less board and the
+ * UI shows the "See menu" fallback instead of inventing a number. Photos live
+ * in `public/`; items without a matching shot fall back to the waffle glyph.
  */
+
+import type { Tone } from '../config/types'
 
 export type MenuItem = {
   id: string
   name: string
-  /** Price in CAD. */
-  price: number
-  /** Upper bound when Square lists a range (boxes, scoops, espresso). */
+  /** Omit for a category-only board — the card shows "See menu" (see `formatPrice`). */
+  price?: number
+  /** Upper bound when the source lists a range (boxes, scoops, espresso). */
   priceMax?: number
   blurb?: string
   badge?: string
   featured?: boolean
-  tone: { syrup: string; tint: string }
+  tone: Tone
   image?: string
 }
 
@@ -27,6 +31,8 @@ export type MenuCategory = {
   blurb?: string
   /** `list` is for canned drinks — a grid of waffle glyphs would look padded. */
   layout?: 'cards' | 'list'
+  /** Surface this category first / with emphasis (reserved for future use). */
+  featured?: boolean
   items: MenuItem[]
 }
 
@@ -41,13 +47,6 @@ const T = {
   coffee: { syrup: '#3E2415', tint: '#D9BFA8' },
   cream: { syrup: '#C4A574', tint: '#F4E6D0' },
 } as const
-
-export function formatCad(price: number, priceMax?: number): string {
-  const f = (n: number) =>
-    `$${n.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-  if (priceMax != null && priceMax !== price) return `${f(price)}–${f(priceMax)}`
-  return f(price)
-}
 
 export const menu: MenuCategory[] = [
   {
@@ -472,55 +471,3 @@ export const menu: MenuCategory[] = [
 /** First tab a visitor should land on — the full dessert board, not a one-item special. */
 export const DEFAULT_MENU_CATEGORY = 'dessert'
 
-/**
- * GALLERY — photos in `public/`. If a file is missing, Gallery falls back to
- * the waffle glyph currently used as placeholder art.
- */
-export type GalleryShot = {
-  id: string
-  src?: string
-  alt: string
-  tone: { syrup: string; tint: string }
-  wide?: boolean
-}
-
-export const gallery: GalleryShot[] = [
-  {
-    id: 'g1',
-    src: '/waffle1.webp',
-    alt: 'Belgian waffle piled with berries, banana, and red syrup',
-    tone: { syrup: '#C21F38', tint: '#F3C9CF' },
-    wide: true,
-  },
-  {
-    id: 'g2',
-    src: '/waffle2.webp',
-    alt: 'Belgian waffle with mango, chocolate drizzle, and a scoop of ice cream',
-    tone: { syrup: '#6B4423', tint: '#EBD3B4' },
-  },
-  {
-    id: 'g3',
-    src: '/waffle4.webp',
-    alt: 'Waffle pop on a stick with cream, strawberries, and powdered sugar',
-    tone: { syrup: '#C21F38', tint: '#F3C9CF' },
-  },
-  {
-    id: 'g4',
-    src: '/milkshake1.webp',
-    alt: 'Strawberry milkshake with whipped cream and berry syrup',
-    tone: { syrup: '#C21F38', tint: '#F3C9CF' },
-  },
-  {
-    id: 'g5',
-    src: '/coffee1.webp',
-    alt: 'Takeaway coffee topped with whipped cream and chocolate drizzle',
-    tone: { syrup: '#3E2415', tint: '#D9BFA8' },
-  },
-  {
-    id: 'g6',
-    src: '/waffle3.webp',
-    alt: 'Belgian waffle with fruit, pistachio, chocolate, and ice cream',
-    tone: { syrup: '#C98A12', tint: '#F7E3B0' },
-    wide: true,
-  },
-]

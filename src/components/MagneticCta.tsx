@@ -74,13 +74,14 @@ export function MagneticCta({
 }: Props) {
   const reduced = usePrefersReducedMotion()
   const { ref, x, y, labelX, labelY, handlers } = useMagnetic<HTMLAnchorElement>()
+  const external = href.startsWith('http')
 
   return (
     <motion.a
       ref={ref}
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
       aria-label={label}
       className={cx(BASE, SIZES[size], VARIANTS[variant], className)}
       style={{ x, y }}

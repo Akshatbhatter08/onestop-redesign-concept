@@ -1,7 +1,7 @@
 import { Suspense, lazy, useRef } from 'react'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
-import { site } from '../config/site'
-import { useCanRender3D, useIdleReady } from '../hooks/useCanRender3D'
+import { config, copy } from '../config/business'
+import { useCanRender3D } from '../hooks/useCanRender3D'
 import { usePrefersReducedMotion, useHeroFrame } from '../hooks/useMediaQuery'
 import {
   EASE_SOFT,
@@ -19,21 +19,31 @@ import { OrderBagIcon, PinIcon, SparkIcon } from './icons'
  * Lazy: this is the ONLY import path to three.js / R3F / drei in the app, so
  * Rollup keeps the entire 3D stack in its own chunk and first paint never waits
  * on it. Nothing in the eager graph may import from `src/three/`.
+ *
+ * The import is kicked off as soon as this module evaluates (not after an idle
+ * timeout) so Vercel visitors overlap the ~1MB chunk with first paint instead
+ * of waiting 1.4s *then* starting the download.
  */
-const WaffleScene = lazy(() => import('../three/WaffleScene'))
+const waffleScenePromise = import('../three/WaffleScene')
+const WaffleScene = lazy(() => waffleScenePromise)
 
-/** Headline, split per line so the accent word can take the italic cut. */
-const HEADLINE: string[][] = [
-  ['Authentic'],
-  ['Belgian', '&', 'Liège'],
-  ['waffles.'],
-]
+/** Render `**bold**` segments of a copy string as the emphasised inline style. */
+function renderEmphasis(text: string) {
+  return text.split('**').map((seg, i) =>
+    i % 2 === 1 ? (
+      <strong key={i} className="font-semibold text-toast-700">
+        {seg}
+      </strong>
+    ) : (
+      seg
+    ),
+  )
+}
 
 export function Hero() {
   const section = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
   const { decided, enabled } = useCanRender3D()
-  const idle = useIdleReady()
   // Single source of truth for band vs side — `window.innerWidth >= 1024`.
   // Do not key this off Tailwind `lg:` or the canvas can frame one layout while
   // the DOM is still in the other.
@@ -54,7 +64,7 @@ export function Hero() {
   const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
   const cueOpacity = useTransform(scrollYProgress, [0, 0.14], [1, 0])
 
-  const show3D = decided && enabled && idle
+  const show3D = decided && enabled
   // Reduced motion: skip variants entirely so nothing ever moves.
   const variants = reduced ? staticVariants : undefined
 
@@ -108,35 +118,35 @@ export function Hero() {
           <motion.div variants={variants ?? staggerItem}>
             <span className="inline-flex items-center gap-2 rounded-full bg-cream-50/85 py-2 pr-4 pl-2.5 text-[0.75rem] font-semibold text-toast-500 ring-1 ring-toast-200/70 backdrop-blur-sm">
               <PinIcon className="h-3.5 w-3.5 text-berry-500" />
-              {site.area} · {site.city}
+              {config.location.neighbourhood} · {config.location.city}
             </span>
           </motion.div>
 
           {/* Headline — each line clips its own words so they rise into place */}
           <h1 className="display mt-4 text-[clamp(2.5rem,11.8vw,3.25rem)] !leading-[1.06] text-toast-800 md:mt-5 md:text-[3.5rem] lg:mt-6 lg:text-[clamp(2.6rem,3.7vw,3.75rem)] lg:!leading-[1.1]">
-            {HEADLINE.map((line, li) => (
+            {copy.hero.headlineLines.map((line, li) => (
               <span
                 key={li}
                 className={cx(
                   'block overflow-hidden pb-[0.12em] lg:pb-[0.16em]',
-                  desktop && li === 1 && 'whitespace-nowrap',
+                  desktop && line.length > 1 && 'whitespace-nowrap',
                 )}
               >
-                {line.map((word) => (
-                  <motion.span
-                    key={word}
-                    variants={variants ?? headlineWord}
-                    className={
-                      word === 'Liège'
-                        ? 'display-accent mr-[0.2em] inline-block text-honey-600 last:mr-0'
-                        : word === 'Belgian'
-                          ? 'display-accent mr-[0.2em] inline-block text-toast-500 last:mr-0'
-                          : 'mr-[0.2em] inline-block last:mr-0'
-                    }
-                  >
-                    {word}
-                  </motion.span>
-                ))}
+                {line.map((word, wi) => {
+                  const accent = copy.hero.accentWords[word]
+                  return (
+                    <motion.span
+                      key={`${word}-${wi}`}
+                      variants={variants ?? headlineWord}
+                      className={cx(
+                        'mr-[0.2em] inline-block last:mr-0',
+                        accent && `display-accent ${accent}`,
+                      )}
+                    >
+                      {word}
+                    </motion.span>
+                  )
+                })}
               </span>
             ))}
           </h1>
@@ -145,10 +155,7 @@ export function Hero() {
             variants={variants ?? staggerItem}
             className="mt-3 max-w-[24rem] text-[1.0625rem] leading-[1.6] text-toast-500 md:mt-5 md:max-w-[32rem] md:text-[1.125rem] md:leading-[1.65]"
           >
-            Pressed fresh to order in Toronto’s Junction — deep-pocketed{' '}
-            <strong className="font-semibold text-toast-700">Belgian</strong> rounds,
-            caramelised <strong className="font-semibold text-toast-700">Liège</strong>,
-            handcrafted milkshakes, and cozy hot drinks.
+            {renderEmphasis(copy.hero.subcopy)}
           </motion.p>
 
           {/* One row, even at 390px — two stacked pills ate 124px of vertical
@@ -159,22 +166,22 @@ export function Hero() {
             className="mt-5 flex items-center gap-2.5 sm:gap-3 md:mt-6 lg:mt-8"
           >
             <MagneticCta
-              href={site.links.order}
+              href={config.links.order}
               variant="primary"
               icon={<OrderBagIcon className="h-[1.15rem] w-[1.15rem] shrink-0" />}
               withArrow
               className="min-w-0 flex-1 sm:flex-none"
             >
-              Order Online
+              {copy.cta.orderLong}
             </MagneticCta>
             <MagneticCta
-              href={site.links.catering}
+              href={config.links.catering}
               variant="cream"
               icon={<SparkIcon className="h-[1.05rem] w-[1.05rem] shrink-0" />}
               withArrow
               className="min-w-0 flex-1 sm:flex-none"
             >
-              Catering
+              {copy.cta.catering}
             </MagneticCta>
           </motion.div>
         </motion.div>

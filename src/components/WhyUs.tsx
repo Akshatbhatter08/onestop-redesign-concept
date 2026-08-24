@@ -1,6 +1,7 @@
-import { site } from '../config/site'
+import { config, copy } from '../config/business'
 import { Reveal, Stagger, StaggerItem } from './Reveal'
 import { SparkIcon } from './icons'
+import { cx } from '../lib/cx'
 
 /**
  * The pricing hook, told as an argument rather than a feature grid: a claim on
@@ -20,27 +21,26 @@ export function WhyUs() {
           <Reveal x={-20} y={16}>
             <span className="eyebrow inline-flex items-center gap-2 text-honey-700">
               <SparkIcon className="h-3.5 w-3.5" />
-              Why us
+              {copy.why.eyebrow}
             </span>
 
             <h2 className="display mt-4 text-[clamp(2.125rem,8.6vw,2.75rem)] text-toast-800 md:text-[3.25rem] lg:text-[3.5rem]">
-              A waffle should be more than{' '}
-              <span className="display-accent text-berry-500">just dessert.</span>
+              {copy.why.headline.lead}{' '}
+              <span className={cx('display-accent', copy.why.headline.accentClass)}>
+                {copy.why.headline.accent}
+              </span>
             </h2>
 
             <p className="mt-5 max-w-[30rem] text-[1.0625rem] leading-[1.65] text-toast-500 md:text-[1.125rem]">
-              Inspired by authentic Belgian waffles, we press every order fresh —
-              traditional recipes met with creative toppings, premium chocolate,
-              fresh fruit, and locally loved flavours. From a single after-dinner
-              treat to catering a thousand waffle pops, every order matters to us.
+              {copy.why.body}
             </p>
           </Reveal>
         </div>
 
         {/* ---------- The evidence ---------- */}
         <Stagger className="lg:col-span-7 lg:pt-3" stagger={0.11}>
-          {site.proof.map((p, i) => (
-            <StaggerItem key={p.kicker}>
+          {config.proof.map((p, i) => (
+            <StaggerItem key={p.title}>
               <div className="group flex gap-5 border-t border-toast-200/70 py-7 first:border-t-0 first:pt-0 md:gap-8 md:py-9">
                 {/* Index */}
                 <span className="price mt-0.5 shrink-0 text-[1.0625rem] text-honey-500 tabular-nums">
