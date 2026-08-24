@@ -1,0 +1,411 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   THE DELICIOUS WAFFLE — design tokens
+   Warm honey / toasted brown / cream, with a berry accent reserved for CTAs.
+   ========================================================================== */
+
+@theme {
+  /* ---- Type ---- */
+  --font-sans:
+    'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+
+  /* ---- Cream: page + card surfaces ---- */
+  --color-cream-50: #fffcf7;
+  --color-cream-100: #fdf7ee;
+  --color-cream-200: #f8eedd;
+  --color-cream-300: #f1e1c9;
+  --color-cream-400: #e7cfad;
+
+  /* ---- Honey: primary brand gold ---- */
+  --color-honey-100: #fef3d8;
+  --color-honey-200: #fbe0a6;
+  --color-honey-300: #f8c86a;
+  --color-honey-400: #f2ab35;
+  --color-honey-500: #e08f12;
+  --color-honey-600: #bc7008;
+  --color-honey-700: #94570a;
+
+  /* ---- Toast: text + dark sections ---- */
+  --color-toast-200: #d9bfa8;
+  --color-toast-300: #be9877;
+  --color-toast-400: #9e7150;
+  --color-toast-500: #7a5136;
+  --color-toast-600: #5e3b26;
+  --color-toast-700: #46291a;
+  --color-toast-800: #2e1a11;
+  --color-toast-900: #1e1009;
+
+  /* ---- Berry: the one punchy accent. CTAs only. ---- */
+  --color-berry-300: #f58497;
+  --color-berry-400: #ee5670;
+  --color-berry-500: #e0344b;
+  --color-berry-600: #c41f38;
+  --color-berry-700: #9e1429;
+
+  /* ---- Organic radii ---- */
+  --radius-card: 28px;
+  --radius-blob: 44px;
+
+  /* ---- Warm-tinted shadows (never neutral grey — that's what kills food sites) ---- */
+  --shadow-soft: 0 1px 2px rgb(46 26 17 / 0.05), 0 6px 18px -8px rgb(46 26 17 / 0.16);
+  --shadow-lift: 0 2px 6px rgb(46 26 17 / 0.06), 0 22px 48px -16px rgb(46 26 17 / 0.28);
+  --shadow-cta: 0 2px 6px rgb(196 31 56 / 0.22), 0 12px 28px -10px rgb(224 52 75 / 0.5);
+  --shadow-badge:
+    inset 0 1px 0 rgb(255 255 255 / 0.6), 0 2px 4px rgb(148 87 10 / 0.18),
+    0 16px 36px -14px rgb(188 112 8 / 0.7);
+
+  /* ---- Easings ---- */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swift: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-back: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* ---- Named animations ---- */
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float-slow: float-slow 7s ease-in-out infinite;
+  --animate-bob: bob 2.4s ease-in-out infinite;
+
+  /*
+   * Pin `lg` in CSS pixels. Tailwind v4 defaults to `64rem`, which drifts off
+   * 1024px when the root font-size isn't 16px and can miss iPad-landscape
+   * (exactly 1024) by a subpixel. The hero layout also keys off this width.
+   */
+  --breakpoint-lg: 1024px;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* `clip` not `hidden`: hidden would break position:sticky descendants. */
+    overflow-x: clip;
+  }
+
+  body {
+    @apply bg-cream-100 font-sans text-toast-600 antialiased;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Fixed nav is 64–80px tall; keep anchor jumps clear of it. */
+  [id] {
+    scroll-margin-top: 96px;
+  }
+
+  ::selection {
+    background-color: var(--color-honey-300);
+    color: var(--color-toast-800);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-berry-500);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  img {
+    /* Placeholder art is SVG; keep it crisp and never let it blow out layout. */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ==========================================================================
+   Components / motifs
+   ========================================================================== */
+
+@layer components {
+  /* Consistent page gutters. Mobile-first: 20px at 390px. */
+  .shell {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 40px;
+    }
+  }
+  @media (min-width: 1440px) {
+    .shell {
+      max-width: 1380px;
+      padding-inline: 56px;
+    }
+  }
+
+  /* ---- The headline voice. One place to tune every display string. ---- */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings:
+      'opsz' 120,
+      'SOFT' 40,
+      'WONK' 0;
+    letter-spacing: -0.03em;
+    line-height: 0.94;
+    text-wrap: balance;
+  }
+
+  /* Softer, wonkier cut for italic accent words — this is the "boutique" tell. */
+  .display-accent {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-style: italic;
+    font-variation-settings:
+      'opsz' 132,
+      'SOFT' 80,
+      'WONK' 1;
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* Prices in Fraunces read as "considered" rather than "cheap". */
+  .price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'opsz' 96,
+      'SOFT' 30,
+      'WONK' 0;
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---- Waffle-grid background motif. Pure CSS, no image request. ---- */
+  .waffle-motif {
+    --cell: 44px;
+    --channel: rgb(120 74 44 / 0.08);
+    background-image:
+      radial-gradient(circle at 30% 26%, rgb(255 255 255 / 0.55), transparent 56%),
+      radial-gradient(circle at 76% 80%, rgb(120 74 44 / 0.05), transparent 58%),
+      linear-gradient(to right, var(--channel) 0 2px, transparent 2px),
+      linear-gradient(to bottom, var(--channel) 0 2px, transparent 2px);
+    background-size: var(--cell) var(--cell);
+  }
+  @media (min-width: 768px) {
+    .waffle-motif {
+      --cell: 60px;
+    }
+  }
+
+  /* Same motif, inverted for dark sections. */
+  .waffle-motif-dark {
+    --cell: 44px;
+    --channel: rgb(255 232 196 / 0.055);
+    background-image:
+      radial-gradient(circle at 30% 26%, rgb(255 226 170 / 0.05), transparent 56%),
+      linear-gradient(to right, var(--channel) 0 2px, transparent 2px),
+      linear-gradient(to bottom, var(--channel) 0 2px, transparent 2px);
+    background-size: var(--cell) var(--cell);
+  }
+  @media (min-width: 768px) {
+    .waffle-motif-dark {
+      --cell: 60px;
+    }
+  }
+
+  /* ---- Masks: keep motifs from ever looking mechanical ---- */
+  .mask-radial {
+    -webkit-mask-image: radial-gradient(ellipse 110% 78% at 50% 22%, #000 28%, transparent 76%);
+    mask-image: radial-gradient(ellipse 110% 78% at 50% 22%, #000 28%, transparent 76%);
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%);
+  }
+
+  /* ---- Film grain. Static (never animated) so it composites once. ---- */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0.05;
+    background-size: 170px 170px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='170' height='170' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---- Specular sweep for the ₹50 badge ---- */
+  .shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .shine::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      104deg,
+      transparent 38%,
+      rgb(255 255 255 / 0.28) 46%,
+      rgb(255 255 255 / 0.72) 50%,
+      rgb(255 255 255 / 0.28) 54%,
+      transparent 62%
+    );
+    transform: translate3d(-130%, 0, 0);
+    animation: shine 4.8s cubic-bezier(0.45, 0, 0.15, 1) infinite;
+  }
+
+  /* ---- Frosted chrome for the floating nav ---- */
+  .glass {
+    background-color: rgb(253 247 238 / 0.72);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ticket-stub notches on price pills. */
+  .notch {
+    position: relative;
+  }
+  .notch::before,
+  .notch::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background-color: var(--color-cream-100);
+    transform: translateY(-50%);
+  }
+  .notch::before {
+    left: -5px;
+  }
+  .notch::after {
+    right: -5px;
+  }
+}
+
+/* ==========================================================================
+   Keyframes — transform/opacity only, so everything stays on the compositor
+   ========================================================================== */
+
+@keyframes shine {
+  0%,
+  58% {
+    transform: translate3d(-130%, 0, 0);
+  }
+  100% {
+    transform: translate3d(130%, 0, 0);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.28);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.28);
+    opacity: 0;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, 5px, 0);
+  }
+}
+
+/* ==========================================================================
+   Lenis (smooth scroll) — required styles.
+   Note: we deliberately omit Lenis' `iframe { pointer-events: none }` rule and
+   gate the map iframe behind a tap-to-interact shield instead (LocationMap.tsx),
+   so the map stays usable without hijacking the scroll.
+   ========================================================================== */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ==========================================================================
+   Reduced motion — hard stop on every CSS animation.
+   Framer Motion + the 3D hero are handled in JS (see usePrefersReducedMotion).
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .shine::after {
+    display: none;
+  }
+}

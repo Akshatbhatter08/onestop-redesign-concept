@@ -1,0 +1,136 @@
+[
+  {
+    "name": "390",
+    "width": 390,
+    "height": 844,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\390-hero.png",
+    "errors": [],
+    "innerWidth": 390,
+    "innerHeight": 844,
+    "layout": "phone",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 300,
+      "h": 150
+    },
+    "navOrderOpacity": "1",
+    "scrolled": {
+      "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\390-scrolled.png",
+      "scrollY": 802,
+      "navOrderOpacity": "1",
+      "stickyPresent": true
+    }
+  },
+  {
+    "name": "768",
+    "width": 768,
+    "height": 1024,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\768-hero.png",
+    "errors": [],
+    "innerWidth": 768,
+    "innerHeight": 1024,
+    "layout": "tablet",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 0,
+      "h": 0
+    },
+    "navOrderOpacity": "1",
+    "scrolled": {
+      "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\768-scrolled.png",
+      "scrollY": 973,
+      "navOrderOpacity": "0",
+      "stickyPresent": true
+    }
+  },
+  {
+    "name": "1023",
+    "width": 1023,
+    "height": 768,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\1023-hero.png",
+    "errors": [],
+    "innerWidth": 1023,
+    "innerHeight": 768,
+    "layout": "wide",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 1023,
+      "h": 461
+    },
+    "navOrderOpacity": "1",
+    "scrolled": {
+      "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\1023-scrolled.png",
+      "scrollY": 730,
+      "navOrderOpacity": "1",
+      "stickyPresent": true
+    }
+  },
+  {
+    "name": "1024",
+    "width": 1024,
+    "height": 768,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\1024-hero.png",
+    "errors": [],
+    "innerWidth": 1024,
+    "innerHeight": 768,
+    "layout": "side",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 655,
+      "h": 768
+    },
+    "navOrderOpacity": "1",
+    "scrolled": null
+  },
+  {
+    "name": "1025",
+    "width": 1025,
+    "height": 768,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\1025-hero.png",
+    "errors": [],
+    "innerWidth": 1025,
+    "innerHeight": 768,
+    "layout": "side",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 656,
+      "h": 768
+    },
+    "navOrderOpacity": "1",
+    "scrolled": null
+  },
+  {
+    "name": "1440",
+    "width": 1440,
+    "height": 900,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\1440-hero.png",
+    "errors": [],
+    "innerWidth": 1440,
+    "innerHeight": 900,
+    "layout": "side",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 922,
+      "h": 900
+    },
+    "navOrderOpacity": "1",
+    "scrolled": null
+  },
+  {
+    "name": "1920",
+    "width": 1920,
+    "height": 1080,
+    "file": "C:\\Users\\KIIT\\Documents\\Antigravity_Projects\\Waffle\\tmp\\breakpoints\\1920-hero.png",
+    "errors": [],
+    "innerWidth": 1920,
+    "innerHeight": 1080,
+    "layout": "side",
+    "hasCanvas": true,
+    "canvasSize": {
+      "w": 1229,
+      "h": 1080
+    },
+    "navOrderOpacity": "1",
+    "scrolled": null
+  }
+]
